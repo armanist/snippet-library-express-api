@@ -38,4 +38,16 @@ export class SnippetsService {
 
         return this.snippetRepository.save(snippet)
     }
+
+    async update(id: string, changes: Partial<SnippetDraft>): Promise<SnippetEntity | null> {
+        const snippet = await this.snippetRepository.findOneBy({id});
+
+        if(!snippet) {
+            return null
+        }
+
+        Object.assign(snippet, changes)
+
+        return this.snippetRepository.save(snippet)
+    }
 }
