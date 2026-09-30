@@ -8,6 +8,7 @@ export function createSnippetsRouter(snippetsController: SnippetsController) {
     router.get('/:id', snippetsController.getOne)
     router.post('/', snippetsController.create)
     router.patch('/:id', snippetsController.update)
+    router.delete('/:id', snippetsController.delete)
 
     return router
 }

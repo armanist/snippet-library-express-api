@@ -50,4 +50,10 @@ export class SnippetsService {
 
         return this.snippetRepository.save(snippet)
     }
+
+    async delete(id: string): Promise<boolean> {
+        const result = await this.snippetRepository.delete(id)
+
+        return result.affected === 1
+    } 
 }

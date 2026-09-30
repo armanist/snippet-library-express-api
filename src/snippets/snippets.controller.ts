@@ -5,28 +5,28 @@ import { createSnippetSchema } from "./schemas/create-snippet.schema.js";
 import { updateSnippetSchema } from "./schemas/update-snippet.schema.js";
 
 export class SnippetsController {
-    constructor(private readonly snippetService: SnippetsService) {}
+    constructor(private readonly snippetService: SnippetsService) { }
 
-    getAll = async (request: Request, response: Response): Promise<void>  => {
+    getAll = async (request: Request, response: Response): Promise<void> => {
         const result = await this.snippetService.findAll()
 
         response.json(result)
     }
 
-    getOne = async (request: Request<{id: string}>, response: Response): Promise<void> => {
+    getOne = async (request: Request<{ id: string }>, response: Response): Promise<void> => {
         const snippet = await this.snippetService.findById(request.params.id)
 
-        if(!snippet) {
+        if (!snippet) {
             throw new HttpError(404, `Snippet with ID ${request.params.id} was not found`)
         }
 
-        response.json(snippet)        
+        response.json(snippet)
     }
 
     create = async (request: Request, response: Response): Promise<void> => {
         const result = createSnippetSchema.safeParse(request.body)
 
-        if(!result.success) {
+        if (!result.success) {
             const message = result.error.issues
                 .map((issue) => `${issue.path.join('.')}: ${issue.message}`)
                 .join('; ')
@@ -39,12 +39,12 @@ export class SnippetsController {
         response
             .status(201)
             .json(snippet)
-    } 
+    }
 
-    update = async(request: Request<{id: string}>, response: Response): Promise<void> => {
+    update = async (request: Request<{ id: string }>, response: Response): Promise<void> => {
         const result = updateSnippetSchema.safeParse(request.body)
 
-        if(!result.success) {
+        if (!result.success) {
             const message = result.error.issues
                 .map((issue) => `${issue.path.join('.')}: ${issue.message}`)
                 .join('; ')
@@ -54,10 +54,23 @@ export class SnippetsController {
 
         const snippet = await this.snippetService.update(request.params.id, result.data)
 
-        if(!snippet) {
+        if (!snippet) {
             throw new HttpError(404, `Snippet with ID ${request.params.id} was not found`)
         }
 
         response.json(snippet)
+    }
+
+    delete = async (request: Request<{ id: string }>, response: Response): Promise<void> => {
+        const deleted = await this.snippetService.delete(request.params.id)
+
+        if (!deleted) {
+            throw new HttpError(
+                404,
+                `Snippet with ID ${request.params.id} was not found`,
+            )
+        }
+
+        response.status(204).send()
     }
 }
