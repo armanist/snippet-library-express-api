@@ -1,6 +1,7 @@
+import { randomUUID } from "crypto";
+import type { SnippetEntity } from "./snippet.entity.js";
 import type { Repository } from "typeorm";
-import { SnippetEntity } from "./snippet.entity.js";
-import type { FindSnippetsResult } from "./snippet.js";
+import type { FindSnippetsResult, SnippetDraft } from "./snippet.js";
 
 export class SnippetsService {
     constructor(private readonly snippetRepository: Repository<SnippetEntity>) {}
@@ -27,5 +28,14 @@ export class SnippetsService {
 
     async findById(id: string): Promise<SnippetEntity | null> {
         return await this.snippetRepository.findOneBy({id})
+    }
+
+    create(draft: SnippetDraft): Promise<SnippetEntity> {
+        const snippet = this.snippetRepository.create({
+            id: randomUUID(),
+            ...draft,
+        })
+
+        return this.snippetRepository.save(snippet)
     }
 }

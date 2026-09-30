@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 import type { SnippetsService } from "./snippets.service.js";
 import { HttpError } from "../common/http-error.js";
+import { createSnippetSchema } from "./create-snippet.schema.js";
 
 export class SnippetsController {
     constructor(private readonly snippetService: SnippetsService) {}
@@ -20,4 +21,22 @@ export class SnippetsController {
 
         response.json(snippet)        
     }
+
+    create = async (request: Request, response: Response): Promise<void> => {
+        const result = createSnippetSchema.safeParse(request.body)
+
+        if(!result.success) {
+            const message = result.error.issues
+                .map((issue) => `${issue.path.join('.')}: ${issue.message}`)
+                .join('; ')
+
+            throw new HttpError(400, message)
+        }
+
+        const snippet = await this.snippetService.create(result.data)
+
+        response
+            .status(201)
+            .json(snippet)
+    } 
 }
