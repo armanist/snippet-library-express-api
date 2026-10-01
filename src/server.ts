@@ -9,6 +9,12 @@ import { createSnippetsRouter } from './snippets/snippets.router.js'
 
 const port = Number(process.env.PORT ?? 3000)
 
+const clientOrigin = process.env.CLIENT_ORIGIN
+
+if(!clientOrigin) {
+    throw new Error('CLIENT_ORIGIN is required')
+}
+
 await dataSource.initialize()
 
 const snippetService = new SnippetsService(dataSource.getRepository(SnippetEntity))
@@ -17,7 +23,7 @@ const snippetsController = new SnippetsController(snippetService)
 
 const snippetsRouter = createSnippetsRouter(snippetsController)
 
-const app = createApp(snippetsRouter)
+const app = createApp(snippetsRouter, clientOrigin)
 
 app.listen(port, () => {
     console.log(`API listening on port ${port}`)
