@@ -3,14 +3,25 @@ import type { SnippetsService } from "./snippets.service.js";
 import { HttpError } from "../common/http-error.js";
 import { createSnippetSchema } from "./schemas/create-snippet.schema.js";
 import { updateSnippetSchema } from "./schemas/update-snippet.schema.js";
+import { listSnippetsQuerySchema } from "./schemas/list-snippets-query.schema.js";
 
 export class SnippetsController {
     constructor(private readonly snippetService: SnippetsService) { }
 
     getAll = async (request: Request, response: Response): Promise<void> => {
-        const result = await this.snippetService.findAll()
+        const result = listSnippetsQuerySchema.safeParse(request.query)
 
-        response.json(result)
+        if(!result.success) {
+             const message = result.error.issues
+                .map((issue) => `${issue.path.join('.')}: ${issue.message}`)
+                .join('; ')
+
+            throw new HttpError(400, message)
+        }
+        
+        const snippets = await this.snippetService.findAll(result.data)
+
+        response.json(snippets)
     }
 
     getOne = async (request: Request<{ id: string }>, response: Response): Promise<void> => {

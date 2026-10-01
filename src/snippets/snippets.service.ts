@@ -1,19 +1,32 @@
 import { randomUUID } from "crypto";
 import type { SnippetEntity } from "./snippet.entity.js";
 import type { Repository } from "typeorm";
-import type { FindSnippetsResult, SnippetDraft } from "./snippet.js";
+import type { FindSnippetsResult, SnippetDraft, FindSnippetsOptions } from "./snippet.js";
 
 export class SnippetsService {
     constructor(private readonly snippetRepository: Repository<SnippetEntity>) {}
 
-    async findAll(): Promise<FindSnippetsResult> {
-        const page = 1
-        const limit = 20
+    async findAll(options: FindSnippetsOptions = {}): Promise<FindSnippetsResult> {
+        const page = options.page ?? 1
+        const limit = options.limit ?? 20
 
-        const [snippets, total] = await this.snippetRepository.findAndCount({
-            skip: (page - 1) * limit,
-            take: limit,
-        })
+        const normalizedSearch = options.search?.trim().toLowerCase()
+        const query = this.snippetRepository.createQueryBuilder('snippet')
+
+        if(normalizedSearch) {
+            query
+                .where('LOWER(snippet.title) LIKE :search')
+                .orWhere('LOWER(snippet.language) LIKE :search')
+                .orWhere('LOWER(snippet.code) LIKE :search')
+                .orWhere('LOWER(snippet.tags) LIKE :search')
+                .setParameter('search', `%${normalizedSearch}%`);
+        }
+
+        query
+            .skip((page - 1) * limit)
+            .take(limit)
+
+        const [snippets, total] = await query.getManyAndCount()
 
         return {
             snippets,
