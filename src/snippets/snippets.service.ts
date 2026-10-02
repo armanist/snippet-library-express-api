@@ -23,6 +23,8 @@ export class SnippetsService {
         }
 
         query
+            .orderBy('snippet.createdAt', 'DESC')
+            .addOrderBy('snippet.id', 'ASC')
             .skip((page - 1) * limit)
             .take(limit)
 
