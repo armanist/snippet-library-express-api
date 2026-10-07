@@ -4,10 +4,10 @@ Snippet Library API built with Express 5, TypeScript, SQLite, and TypeORM.
 
 ## Features
 
-- Express 5 with TypeScript and ECMAScript modules
-- SQLite persistence through TypeORM
-- Versioned database migrations with schema synchronization disabled
-- JSON request parsing and a health-check endpoint
+- Express 5 REST API and Apollo Server GraphQL API, written in TypeScript
+- Snippet CRUD, search, and server-side pagination through both APIs
+- SQLite persistence through TypeORM migrations, with schema synchronization disabled
+- Zod validation and a health-check endpoint
 
 ## Requirements
 
@@ -35,6 +35,7 @@ The example configures:
 ```dotenv
 DATABASE_PATH=./snippets.sqlite
 PORT=3000
+CLIENT_ORIGIN=http://localhost:5173
 ```
 
 `.env` and the SQLite database are ignored by Git. Keep secrets and machine-specific configuration in `.env`, not `.env.example`.
@@ -67,6 +68,43 @@ Expected response:
 ```json
 {
   "status": "ok"
+}
+```
+
+## API
+
+### REST
+
+| Method | Route | Purpose |
+| --- | --- | --- |
+| `GET` | `/health` | Check that the API is responding |
+| `GET` | `/snippets` | List snippets; accepts `search`, `page`, and `limit` query parameters |
+| `GET` | `/snippets/:id` | Get one snippet |
+| `POST` | `/snippets` | Create a snippet |
+| `PATCH` | `/snippets/:id` | Update a snippet |
+| `DELETE` | `/snippets/:id` | Delete a snippet |
+
+### GraphQL
+
+Send GraphQL operations to `POST /graphql`. During local development, open `http://localhost:3000/graphql` in a browser to use Apollo Sandbox.
+
+The API provides the `snippet` and `snippets` queries, and the `createSnippet`, `updateSnippet`, and `deleteSnippet` mutations. For example:
+
+```graphql
+query {
+  snippets(search: "php", page: 1, limit: 20) {
+    snippets {
+      id
+      title
+      language
+    }
+    pagination {
+      page
+      limit
+      total
+      totalPages
+    }
+  }
 }
 ```
 
