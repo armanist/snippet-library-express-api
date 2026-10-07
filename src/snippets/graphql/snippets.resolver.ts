@@ -3,6 +3,7 @@ import { DateTimeResolver } from "graphql-scalars";
 import type { SnippetsService } from "../snippets.service.js";
 import type { FindSnippetsOptions } from "../snippet.js";
 import { createSnippetSchema } from "../schemas/create-snippet.schema.js";
+import { updateSnippetSchema } from "../schemas/update-snippet.schema.js";
 
 export class SnippetResolver {
     constructor(private readonly snippetService: SnippetsService) { }
@@ -39,6 +40,30 @@ export class SnippetResolver {
         return this.snippetService.create(result.data)
     }
 
+    private update = async (_parent: unknown, { id, input }: { id: string, input: unknown }) => {
+        const result = updateSnippetSchema.safeParse(input)
+
+        if (!result.success) {
+            const message = result.error.issues
+                .map((issue) => `${issue.path.join('.')}: ${issue.message}`)
+                .join('; ')
+
+            throw new GraphQLError(message, {
+                extensions: { code: 'BAD_USER_INPUT' }
+            })
+        }
+
+        const snippet = await this.snippetService.update(id, result.data)
+
+        if (!snippet) {
+            throw new GraphQLError(`Snippet with ID ${id} was not found`, {
+                extensions: { code: 'NOT_FOUND' }
+            })
+        }
+
+        return snippet
+    }
+
     readonly resolvers = {
         DateTime: DateTimeResolver,
         Query: {
@@ -46,7 +71,8 @@ export class SnippetResolver {
             snippets: this.findAll
         },
         Mutation: {
-            createSnippet: this.create
+            createSnippet: this.create,
+            updateSnippet: this.update
         }
     }
 }

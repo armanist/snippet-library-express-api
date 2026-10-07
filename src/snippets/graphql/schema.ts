@@ -37,8 +37,16 @@ export const snippetTypeDefs = `#graphql
         tags: [String!]!
     }
 
+    input UpdateSnippetInput {
+        title: String
+        language: SnippetLanguage
+        code: String
+        tags: [String!]
+    }
+
     type Mutation {
         createSnippet(input: CreateSnippetInput!): Snippet!
+        updateSnippet(id: ID!, input: UpdateSnippetInput!): Snippet!
     }
 
     type Query {
