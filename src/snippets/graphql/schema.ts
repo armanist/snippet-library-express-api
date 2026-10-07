@@ -30,6 +30,17 @@ export const snippetTypeDefs = `#graphql
         pagination: PaginationMetadata!
     }
 
+    input CreateSnippetInput {
+        title: String!
+        language: SnippetLanguage!
+        code: String!
+        tags: [String!]!
+    }
+
+    type Mutation {
+        createSnippet(input: CreateSnippetInput!): Snippet!
+    }
+
     type Query {
         snippet(id: ID!): Snippet!
         snippets(search: String, page: Int, limit: Int): SnippetPage!
