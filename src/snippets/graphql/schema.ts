@@ -18,7 +18,20 @@ export const snippetTypeDefs = `#graphql
         createdAt: DateTime!
     }
 
+    type PaginationMetadata {
+        page: Int!
+        limit: Int!
+        total: Int!
+        totalPages: Int!
+    }
+
+    type SnippetPage {
+        snippets: [Snippet!]!
+        pagination: PaginationMetadata!
+    }
+
     type Query {
         snippet(id: ID!): Snippet!
+        snippets(search: String, page: Int, limit: Int): SnippetPage!
     }
 `;

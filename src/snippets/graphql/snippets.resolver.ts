@@ -1,6 +1,7 @@
 import { GraphQLError } from "graphql";
 import { DateTimeResolver } from "graphql-scalars";
 import type { SnippetsService } from "../snippets.service.js";
+import type { FindSnippetsOptions } from "../snippet.js";
 
 type SnippetArgs = {
     id: string
@@ -8,6 +9,10 @@ type SnippetArgs = {
 
 export class SnippetResolver {
     constructor(private readonly snippetService: SnippetsService) { }
+
+    private findAll = (_parent: unknown, options: FindSnippetsOptions) => {
+        return this.snippetService.findAll(options)
+    }
 
     private findOne = async (_parent: unknown, { id }: SnippetArgs) => {
         const snippet = await this.snippetService.findById(id)
@@ -24,7 +29,8 @@ export class SnippetResolver {
     readonly resolvers = {
         DateTime: DateTimeResolver,
         Query: {
-            snippet: this.findOne
+            snippet: this.findOne,
+            snippets: this.findAll
         }
     }
 }
