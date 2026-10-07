@@ -76,16 +76,18 @@ export class SnippetResolver {
         return id
     }
 
-    readonly resolvers = {
-        DateTime: DateTimeResolver,
-        Query: {
-            snippet: this.findOne,
-            snippets: this.findAll
-        },
-        Mutation: {
-            createSnippet: this.create,
-            updateSnippet: this.update,
-            deleteSnippet: this.delete
+    createResolverMap() {
+        return {
+            DateTime: DateTimeResolver,
+            Query: {
+                snippet: this.findOne,
+                snippets: this.findAll
+            },
+            Mutation: {
+                createSnippet: this.create,
+                updateSnippet: this.update,
+                deleteSnippet: this.delete
+            }
         }
     }
 }

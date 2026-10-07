@@ -26,7 +26,7 @@ const snippetResolver = new SnippetResolver(snippetService)
 
 const apoloServer = new ApolloServer({
     typeDefs: snippetTypeDefs,
-    resolvers: snippetResolver.resolvers
+    resolvers: snippetResolver.createResolverMap()
 })
 
 await apoloServer.start()
