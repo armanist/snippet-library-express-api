@@ -5,6 +5,9 @@ import { SnippetEntity } from './snippets/snippet.entity.js'
 import { SnippetsService } from './snippets/snippets.service.js'
 import { SnippetsController } from './snippets/snippets.controller.js'
 import { createSnippetsRouter } from './snippets/snippets.router.js'
+import { ApolloServer } from '@apollo/server'
+import { snippetTypeDefs } from './snippets/graphql/schema.js'
+import { SnippetResolver } from './snippets/graphql/snippets.resolver.js'
 
 
 const port = Number(process.env.PORT ?? 3000)
@@ -19,11 +22,20 @@ await dataSource.initialize()
 
 const snippetService = new SnippetsService(dataSource.getRepository(SnippetEntity))
 
+const snippetResolver = new SnippetResolver(snippetService)
+
+const apoloServer = new ApolloServer({
+    typeDefs: snippetTypeDefs,
+    resolvers: snippetResolver.resolvers
+})
+
+await apoloServer.start()
+
 const snippetsController = new SnippetsController(snippetService)
 
 const snippetsRouter = createSnippetsRouter(snippetsController)
 
-const app = createApp(snippetsRouter, clientOrigin)
+const app = createApp(snippetsRouter, clientOrigin, apoloServer)
 
 app.listen(port, () => {
     console.log(`API listening on port ${port}`)
