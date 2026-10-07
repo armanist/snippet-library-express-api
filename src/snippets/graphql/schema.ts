@@ -47,6 +47,7 @@ export const snippetTypeDefs = `#graphql
     type Mutation {
         createSnippet(input: CreateSnippetInput!): Snippet!
         updateSnippet(id: ID!, input: UpdateSnippetInput!): Snippet!
+        deleteSnippet(id: ID!): ID!
     }
 
     type Query {

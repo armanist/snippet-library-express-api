@@ -64,6 +64,18 @@ export class SnippetResolver {
         return snippet
     }
 
+    private delete = async (_parent: unknown, { id }: { id: string }) => {
+        const deleted = await this.snippetService.delete(id)
+
+        if (!deleted) {
+            throw new GraphQLError(`Snippet with ID ${id} was not found`, {
+                extensions: { code: 'NOT_FOUND' }
+            })
+        }
+
+        return id
+    }
+
     readonly resolvers = {
         DateTime: DateTimeResolver,
         Query: {
@@ -72,7 +84,8 @@ export class SnippetResolver {
         },
         Mutation: {
             createSnippet: this.create,
-            updateSnippet: this.update
+            updateSnippet: this.update,
+            deleteSnippet: this.delete
         }
     }
 }
