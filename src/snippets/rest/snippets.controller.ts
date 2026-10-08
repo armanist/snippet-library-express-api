@@ -1,9 +1,9 @@
 import type { Request, Response } from "express";
-import type { SnippetsService } from "./snippets.service.js";
-import { HttpError } from "../common/http-error.js";
-import { createSnippetSchema } from "./schemas/create-snippet.schema.js";
-import { updateSnippetSchema } from "./schemas/update-snippet.schema.js";
-import { listSnippetsQuerySchema } from "./schemas/list-snippets-query.schema.js";
+import type { SnippetsService } from "../snippets.service.js";
+import { HttpError } from "../../common/http-error.js";
+import { createSnippetSchema } from "../schemas/create-snippet.schema.js";
+import { updateSnippetSchema } from "../schemas/update-snippet.schema.js";
+import { listSnippetsQuerySchema } from "../schemas/list-snippets-query.schema.js";
 
 export class SnippetsController {
     constructor(private readonly snippetService: SnippetsService) { }
