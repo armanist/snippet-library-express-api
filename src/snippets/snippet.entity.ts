@@ -1,5 +1,5 @@
 import {Column, CreateDateColumn, Entity, PrimaryColumn } from 'typeorm'
-import type { Language } from './snippet.js'
+import type { Language } from './contracts/snippet-language.js'
 
 @Entity('snippets')
 export class SnippetEntity {

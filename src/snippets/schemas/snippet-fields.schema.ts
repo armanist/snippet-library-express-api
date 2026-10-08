@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { LANGUAGES } from '../snippet.js'
+import { LANGUAGES } from '../contracts/snippet-language.js'
 
 export const snippetFields = {
     title: z.string().min(1),

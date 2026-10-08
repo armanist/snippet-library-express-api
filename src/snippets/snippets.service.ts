@@ -1,7 +1,9 @@
 import { randomUUID } from "crypto";
+import type { CreateSnippetData } from "./contracts/create-snippet.js";
+import type { UpdateSnippetData } from "./contracts/update-snippet.js";
 import type { SnippetEntity } from "./snippet.entity.js";
 import type { Repository } from "typeorm";
-import type { FindSnippetsResult, SnippetDraft, FindSnippetsOptions } from "./snippet.js";
+import type { FindSnippetsResult, FindSnippetsOptions } from "./contracts/find-snippet.js";
 
 export class SnippetsService {
     constructor(private readonly snippetRepository: Repository<SnippetEntity>) {}
@@ -45,7 +47,7 @@ export class SnippetsService {
         return await this.snippetRepository.findOneBy({id})
     }
 
-    create(draft: SnippetDraft): Promise<SnippetEntity> {
+    create(draft: CreateSnippetData): Promise<SnippetEntity> {
         const snippet = this.snippetRepository.create({
             id: randomUUID(),
             ...draft,
@@ -54,7 +56,7 @@ export class SnippetsService {
         return this.snippetRepository.save(snippet)
     }
 
-    async update(id: string, changes: Partial<SnippetDraft>): Promise<SnippetEntity | null> {
+    async update(id: string, changes: UpdateSnippetData): Promise<SnippetEntity | null> {
         const snippet = await this.snippetRepository.findOneBy({id});
 
         if(!snippet) {

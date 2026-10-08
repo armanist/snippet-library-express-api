@@ -1,7 +1,7 @@
 import { GraphQLError } from "graphql";
 import { DateTimeResolver } from "graphql-scalars";
 import type { SnippetsService } from "../snippets.service.js";
-import type { FindSnippetsOptions } from "../snippet.js";
+import type { FindSnippetsOptions } from "../contracts/find-snippet.js";
 import { createSnippetSchema } from "../schemas/create-snippet.schema.js";
 import { updateSnippetSchema } from "../schemas/update-snippet.schema.js";
 
