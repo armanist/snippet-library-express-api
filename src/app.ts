@@ -6,13 +6,13 @@ import type { ApolloServer } from '@apollo/server'
 import { expressMiddleware } from '@as-integrations/express5'
 
 export default function createApp(
-    snippetsRouter: Router, 
+    snippetsRouter: Router,
     clientOrigin: string,
-    apoloServer: ApolloServer
+    apoloServer: ApolloServer,
 ) {
     const app = express()
 
-    app.use(cors({origin: clientOrigin }))
+    app.use(cors({ origin: clientOrigin }))
     app.use(express.json())
     app.use('/graphql', expressMiddleware(apoloServer))
     app.use('/snippets', snippetsRouter)

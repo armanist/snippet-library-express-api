@@ -1,4 +1,4 @@
-import {Column, CreateDateColumn, Entity, PrimaryColumn } from 'typeorm'
+import { Column, CreateDateColumn, Entity, PrimaryColumn } from 'typeorm'
 import type { Language } from './contracts/snippet-language.js'
 
 @Entity('snippets')
@@ -9,7 +9,7 @@ export class SnippetEntity {
     @Column({ type: 'varchar' })
     title!: string
 
-    @Column({type: 'text'})
+    @Column({ type: 'text' })
     language!: Language
 
     @Column({ type: 'varchar' })

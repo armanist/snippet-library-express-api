@@ -1,12 +1,12 @@
-import { GraphQLError } from "graphql";
-import { DateTimeResolver } from "graphql-scalars";
-import type { SnippetsService } from "../snippets.service.js";
-import type { FindSnippetsOptions } from "../contracts/find-snippet.js";
-import { createSnippetSchema } from "../schemas/create-snippet.schema.js";
-import { updateSnippetSchema } from "../schemas/update-snippet.schema.js";
+import { GraphQLError } from 'graphql'
+import { DateTimeResolver } from 'graphql-scalars'
+import type { SnippetsService } from '../snippets.service.js'
+import type { FindSnippetsOptions } from '../contracts/find-snippet.js'
+import { createSnippetSchema } from '../schemas/create-snippet.schema.js'
+import { updateSnippetSchema } from '../schemas/update-snippet.schema.js'
 
 export class SnippetResolver {
-    constructor(private readonly snippetService: SnippetsService) { }
+    constructor(private readonly snippetService: SnippetsService) {}
 
     private findAll = (_parent: unknown, options: FindSnippetsOptions) => {
         return this.snippetService.findAll(options)
@@ -17,11 +17,11 @@ export class SnippetResolver {
 
         if (!snippet) {
             throw new GraphQLError(`Snippet with ID ${id} was not found`, {
-                extensions: { code: 'NOT_FOUND' }
+                extensions: { code: 'NOT_FOUND' },
             })
         }
 
-        return snippet;
+        return snippet
     }
 
     private create = (_parent: unknown, { input }: { input: unknown }) => {
@@ -33,14 +33,14 @@ export class SnippetResolver {
                 .join('; ')
 
             throw new GraphQLError(message, {
-                extensions: { code: 'BAD_USER_INPUT' }
+                extensions: { code: 'BAD_USER_INPUT' },
             })
         }
 
         return this.snippetService.create(result.data)
     }
 
-    private update = async (_parent: unknown, { id, input }: { id: string, input: unknown }) => {
+    private update = async (_parent: unknown, { id, input }: { id: string; input: unknown }) => {
         const result = updateSnippetSchema.safeParse(input)
 
         if (!result.success) {
@@ -49,7 +49,7 @@ export class SnippetResolver {
                 .join('; ')
 
             throw new GraphQLError(message, {
-                extensions: { code: 'BAD_USER_INPUT' }
+                extensions: { code: 'BAD_USER_INPUT' },
             })
         }
 
@@ -57,7 +57,7 @@ export class SnippetResolver {
 
         if (!snippet) {
             throw new GraphQLError(`Snippet with ID ${id} was not found`, {
-                extensions: { code: 'NOT_FOUND' }
+                extensions: { code: 'NOT_FOUND' },
             })
         }
 
@@ -69,7 +69,7 @@ export class SnippetResolver {
 
         if (!deleted) {
             throw new GraphQLError(`Snippet with ID ${id} was not found`, {
-                extensions: { code: 'NOT_FOUND' }
+                extensions: { code: 'NOT_FOUND' },
             })
         }
 
@@ -81,13 +81,13 @@ export class SnippetResolver {
             DateTime: DateTimeResolver,
             Query: {
                 snippet: this.findOne,
-                snippets: this.findAll
+                snippets: this.findAll,
             },
             Mutation: {
                 createSnippet: this.create,
                 updateSnippet: this.update,
-                deleteSnippet: this.delete
-            }
+                deleteSnippet: this.delete,
+            },
         }
     }
 }

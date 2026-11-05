@@ -1,25 +1,18 @@
-import type { Request, Response } from "express";
-import type { SnippetsService } from "../snippets.service.js";
-import { HttpError } from "../../common/http-error.js";
-import { createSnippetSchema } from "../schemas/create-snippet.schema.js";
-import { updateSnippetSchema } from "../schemas/update-snippet.schema.js";
-import { listSnippetsQuerySchema } from "../schemas/list-snippets-query.schema.js";
+import type { Request, Response } from 'express'
+import type { SnippetsService } from '../snippets.service.js'
+import { NotFoundError } from '../../common/not-found-error.js'
+import { validateInput } from '../../common/validate-input.js'
+import { createSnippetSchema } from '../schemas/create-snippet.schema.js'
+import { updateSnippetSchema } from '../schemas/update-snippet.schema.js'
+import { listSnippetsQuerySchema } from '../schemas/list-snippets-query.schema.js'
 
 export class SnippetsController {
-    constructor(private readonly snippetService: SnippetsService) { }
+    constructor(private readonly snippetService: SnippetsService) {}
 
     getAll = async (request: Request, response: Response): Promise<void> => {
-        const result = listSnippetsQuerySchema.safeParse(request.query)
+        const query = validateInput(listSnippetsQuerySchema, request.query)
 
-        if(!result.success) {
-             const message = result.error.issues
-                .map((issue) => `${issue.path.join('.')}: ${issue.message}`)
-                .join('; ')
-
-            throw new HttpError(400, message)
-        }
-        
-        const snippets = await this.snippetService.findAll(result.data)
+        const snippets = await this.snippetService.findAll(query)
 
         response.json(snippets)
     }
@@ -28,45 +21,27 @@ export class SnippetsController {
         const snippet = await this.snippetService.findById(request.params.id)
 
         if (!snippet) {
-            throw new HttpError(404, `Snippet with ID ${request.params.id} was not found`)
+            throw new NotFoundError('Snippet', request.params.id)
         }
 
         response.json(snippet)
     }
 
     create = async (request: Request, response: Response): Promise<void> => {
-        const result = createSnippetSchema.safeParse(request.body)
+        const input = validateInput(createSnippetSchema, request.body)
 
-        if (!result.success) {
-            const message = result.error.issues
-                .map((issue) => `${issue.path.join('.')}: ${issue.message}`)
-                .join('; ')
+        const snippet = await this.snippetService.create(input)
 
-            throw new HttpError(400, message)
-        }
-
-        const snippet = await this.snippetService.create(result.data)
-
-        response
-            .status(201)
-            .json(snippet)
+        response.status(201).json(snippet)
     }
 
     update = async (request: Request<{ id: string }>, response: Response): Promise<void> => {
-        const result = updateSnippetSchema.safeParse(request.body)
+        const input = validateInput(updateSnippetSchema, request.body)
 
-        if (!result.success) {
-            const message = result.error.issues
-                .map((issue) => `${issue.path.join('.')}: ${issue.message}`)
-                .join('; ')
-
-            throw new HttpError(400, message)
-        }
-
-        const snippet = await this.snippetService.update(request.params.id, result.data)
+        const snippet = await this.snippetService.update(request.params.id, input)
 
         if (!snippet) {
-            throw new HttpError(404, `Snippet with ID ${request.params.id} was not found`)
+            throw new NotFoundError('Snippet', request.params.id)
         }
 
         response.json(snippet)
@@ -76,10 +51,7 @@ export class SnippetsController {
         const deleted = await this.snippetService.delete(request.params.id)
 
         if (!deleted) {
-            throw new HttpError(
-                404,
-                `Snippet with ID ${request.params.id} was not found`,
-            )
+            throw new NotFoundError('Snippet', request.params.id)
         }
 
         response.status(204).send()

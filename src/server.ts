@@ -1,5 +1,5 @@
 import 'dotenv/config'
-import createApp from "./app.js"
+import createApp from './app.js'
 import dataSource from './database/data-source.js'
 import { SnippetEntity } from './snippets/snippet.entity.js'
 import { SnippetsService } from './snippets/snippets.service.js'
@@ -9,12 +9,11 @@ import { ApolloServer } from '@apollo/server'
 import { snippetTypeDefs } from './snippets/graphql/schema.js'
 import { SnippetResolver } from './snippets/graphql/snippets.resolver.js'
 
-
 const port = Number(process.env.PORT ?? 3000)
 
 const clientOrigin = process.env.CLIENT_ORIGIN
 
-if(!clientOrigin) {
+if (!clientOrigin) {
     throw new Error('CLIENT_ORIGIN is required')
 }
 
@@ -26,7 +25,7 @@ const snippetResolver = new SnippetResolver(snippetService)
 
 const apoloServer = new ApolloServer({
     typeDefs: snippetTypeDefs,
-    resolvers: snippetResolver.createResolverMap()
+    resolvers: snippetResolver.createResolverMap(),
 })
 
 await apoloServer.start()

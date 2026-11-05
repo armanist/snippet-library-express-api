@@ -54,4 +54,4 @@ export const snippetTypeDefs = `#graphql
         snippet(id: ID!): Snippet!
         snippets(search: String, page: Int, limit: Int): SnippetPage!
     }
-`;
+`

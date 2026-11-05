@@ -1,9 +1,9 @@
-import { randomUUID } from "crypto";
-import type { CreateSnippetData } from "./contracts/create-snippet.js";
-import type { UpdateSnippetData } from "./contracts/update-snippet.js";
-import type { SnippetEntity } from "./snippet.entity.js";
-import type { Repository } from "typeorm";
-import type { FindSnippetsResult, FindSnippetsOptions } from "./contracts/find-snippet.js";
+import { randomUUID } from 'crypto'
+import type { CreateSnippetData } from './contracts/create-snippet.js'
+import type { UpdateSnippetData } from './contracts/update-snippet.js'
+import type { SnippetEntity } from './snippet.entity.js'
+import type { Repository } from 'typeorm'
+import type { FindSnippetsResult, FindSnippetsOptions } from './contracts/find-snippet.js'
 
 export class SnippetsService {
     constructor(private readonly snippetRepository: Repository<SnippetEntity>) {}
@@ -15,13 +15,13 @@ export class SnippetsService {
         const normalizedSearch = options.search?.trim().toLowerCase()
         const query = this.snippetRepository.createQueryBuilder('snippet')
 
-        if(normalizedSearch) {
+        if (normalizedSearch) {
             query
                 .where('LOWER(snippet.title) LIKE :search')
                 .orWhere('LOWER(snippet.language) LIKE :search')
                 .orWhere('LOWER(snippet.code) LIKE :search')
                 .orWhere('LOWER(snippet.tags) LIKE :search')
-                .setParameter('search', `%${normalizedSearch}%`);
+                .setParameter('search', `%${normalizedSearch}%`)
         }
 
         query
@@ -38,13 +38,13 @@ export class SnippetsService {
                 page,
                 limit,
                 total,
-                totalPages: Math.ceil(total / limit)
-            }
+                totalPages: Math.ceil(total / limit),
+            },
         }
     }
 
     async findById(id: string): Promise<SnippetEntity | null> {
-        return await this.snippetRepository.findOneBy({id})
+        return await this.snippetRepository.findOneBy({ id })
     }
 
     create(draft: CreateSnippetData): Promise<SnippetEntity> {
@@ -57,9 +57,9 @@ export class SnippetsService {
     }
 
     async update(id: string, changes: UpdateSnippetData): Promise<SnippetEntity | null> {
-        const snippet = await this.snippetRepository.findOneBy({id});
+        const snippet = await this.snippetRepository.findOneBy({ id })
 
-        if(!snippet) {
+        if (!snippet) {
             return null
         }
 
@@ -72,5 +72,5 @@ export class SnippetsService {
         const result = await this.snippetRepository.delete(id)
 
         return result.affected === 1
-    } 
+    }
 }

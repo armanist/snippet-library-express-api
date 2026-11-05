@@ -8,7 +8,9 @@
     "type-check": "tsc --noEmit",
     "build": "tsc",
     "start": "node dist/server.js",
-    "typeorm": "typeorm"
+    "typeorm": "typeorm",
+    "format": "prettier --write src/",
+    "format:check": "prettier --check src/"
   },
   "keywords": [],
   "author": "",
@@ -31,6 +33,7 @@
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/node": "^24.19.0",
+    "prettier": "3.9.6",
     "tsx": "^4.23.15",
     "typescript": "^7.0.2"
   },

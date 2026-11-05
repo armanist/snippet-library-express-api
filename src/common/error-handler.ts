@@ -1,5 +1,5 @@
-import type { ErrorRequestHandler } from "express";
-import { HttpError } from "./http-error.js";
+import type { ErrorRequestHandler } from 'express'
+import { HttpError } from './http-error.js'
 
 export const errorHandler: ErrorRequestHandler = (error, req, res, next) => {
     const isHttpError = error instanceof HttpError
@@ -14,6 +14,6 @@ export const errorHandler: ErrorRequestHandler = (error, req, res, next) => {
         error: isHttpError ? 'HTTP error' : 'Internal server error',
         message: isHttpError ? error.message : 'Internal server error',
         path: req.originalUrl,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
     })
 }

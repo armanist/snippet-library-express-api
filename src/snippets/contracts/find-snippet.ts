@@ -1,8 +1,8 @@
-import type { Snippet } from "./snippet.js"
+import type { Snippet } from './snippet.js'
 
 export interface FindSnippetsOptions {
     search?: string
-    page?: number,
+    page?: number
     limit?: number
 }
 
