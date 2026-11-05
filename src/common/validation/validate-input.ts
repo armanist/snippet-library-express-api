@@ -1,5 +1,5 @@
 import type { ZodType } from 'zod'
-import { BadRequestError } from './bad-request-error.js'
+import { BadRequestError } from '../errors/bad-request-error.js'
 
 export function validateInput<T>(schema: ZodType<T>, data: unknown): T {
     const result = schema.safeParse(data)

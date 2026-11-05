@@ -1,18 +1,17 @@
 import type { ErrorRequestHandler } from 'express'
-import { HttpError } from './http-error.js'
+import { toApiError } from '../errors/to-api-error.js'
 
 export const errorHandler: ErrorRequestHandler = (error, req, res, next) => {
-    const isHttpError = error instanceof HttpError
-    const statusCode = isHttpError ? error.statusCode : 500
+    const { statusCode, code, message } = toApiError(error)
 
-    if (!isHttpError) {
+    if (statusCode === 500) {
         console.log('Unhandled exception', error)
     }
 
     res.status(statusCode).json({
         statusCode,
-        error: isHttpError ? 'HTTP error' : 'Internal server error',
-        message: isHttpError ? error.message : 'Internal server error',
+        error: code,
+        message,
         path: req.originalUrl,
         timestamp: new Date().toISOString(),
     })

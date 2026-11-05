@@ -1,6 +1,6 @@
 import express from 'express'
 import cors from 'cors'
-import { errorHandler } from './common/error-handler.js'
+import { errorHandler } from './common/rest/error-handler.js'
 import type { Router } from 'express'
 import type { ApolloServer } from '@apollo/server'
 import { expressMiddleware } from '@as-integrations/express5'

@@ -8,6 +8,7 @@ import { createSnippetsRouter } from './snippets/rest/snippets.router.js'
 import { ApolloServer } from '@apollo/server'
 import { snippetTypeDefs } from './snippets/graphql/schema.js'
 import { SnippetResolver } from './snippets/graphql/snippets.resolver.js'
+import { errorFormatter } from './common/graphql/error-formatter.js'
 
 const port = Number(process.env.PORT ?? 3000)
 
@@ -26,6 +27,7 @@ const snippetResolver = new SnippetResolver(snippetService)
 const apoloServer = new ApolloServer({
     typeDefs: snippetTypeDefs,
     resolvers: snippetResolver.createResolverMap(),
+    formatError: errorFormatter,
 })
 
 await apoloServer.start()
