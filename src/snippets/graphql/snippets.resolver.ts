@@ -7,7 +7,7 @@ import { createSnippetSchema } from '../schemas/create-snippet.schema.js'
 import { updateSnippetSchema } from '../schemas/update-snippet.schema.js'
 
 export class SnippetResolver {
-    constructor(private readonly snippetService: SnippetsService) { }
+    constructor(private readonly snippetService: SnippetsService) {}
 
     private findAll = (_parent: unknown, options: FindSnippetsOptions) => {
         return this.snippetService.findAll(options)
@@ -28,7 +28,10 @@ export class SnippetResolver {
     }
 
     private update = async (_parent: unknown, { id, input }: { id: string; input: unknown }) => {
-        const snippet = await this.snippetService.update(id, validateInput(updateSnippetSchema, input))
+        const snippet = await this.snippetService.update(
+            id,
+            validateInput(updateSnippetSchema, input),
+        )
 
         if (!snippet) {
             throw new NotFoundError('Snippet', id)
